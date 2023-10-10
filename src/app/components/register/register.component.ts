@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators, FormArray  } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { CustomValidators } from 'src/app/validators/custom-validator';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { group } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +17,7 @@ import { CustomValidators } from 'src/app/validators/custom-validator';
 })
 export class RegisterComponent {
 
-  constructor(private fb: FormBuilder){}
+  constructor(private fb: FormBuilder, private storageServ: LocalStorageService){}
 
   registerForm = this.fb.group({
     userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
@@ -27,12 +29,17 @@ export class RegisterComponent {
     gender: ['']
   })
 
-  onSubmit(){
-    console.log(this.registerForm.valid);
-
-    console.log(this.registerForm.value);
-
+  onSubmit() {
+    if (this.registerForm.valid) {
+      const password = this.registerForm.get('password') ? this.registerForm.get('password')!.value : '';
+      console.log('Password:', password);
+  
+      // Ora puoi passare la password al tuo servizio
+      this.storageServ.savePassword(password!);
+    }
   }
+  
+  
 
   // profileForm = this.fb.group({
   //   firstName: ['', Validators.required],

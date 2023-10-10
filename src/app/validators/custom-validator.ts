@@ -53,26 +53,47 @@ export class CustomValidators {
 
   }
 
-  static isPasswordValid(){
+  static isPasswordValid() {
     return (control: AbstractControl): ValidationErrors | null => {
-      //min: 8 caratteri,
-      //almeno una maiuscola,
-      //almeno uno dei nipoti di Paperino,
-      //deve includere due dei caratteri speciali (!£$?@#*€)
-
-      const validCharacter = ['!', '£', '$', '@', '#', '*', '€']
-      const validNephews = ['qui', 'quo', 'qua']
-
-      if (control.value.length >= 8 && control.value !== control.value.toLowerCase()) {
-
-        return null
+      const validCharacter = ['!', '£', '$', '@', '#', '*', '€'];
+      const validNephews = ['qui', 'quo', 'qua'];
+      const minLength = 8;
+      
+      let uppercaseCount = 0;
+      let specialCharCount = 0;
+      let nephewCount = 0;
+  
+      for (let i = 0; i < control.value.length; i++) {
+        const char = control.value[i];
+  
+        if (validCharacter.includes(char)) {
+          specialCharCount++;
+        }
+  
+        if (i < control.value.length - 2) {
+          const substring = control.value.substr(i, 3).toLowerCase();
+          if (validNephews.includes(substring)) {
+            nephewCount++;
+          }
+        }
+  
+        if (char === char.toUpperCase() && char !== char.toLowerCase()) {
+          uppercaseCount++;
+        }
       }
-
-      //control.value !== control.value.toLowerCase()
-      //control.value.length >= 8
-      return {invalidPassword: control.value}
-    }
-
+  
+      if (
+        control.value.length >= minLength &&
+        uppercaseCount >= 1 &&
+        specialCharCount >= 2 &&
+        nephewCount >= 2
+      ) {
+        return null;
+      }
+  
+      return { invalidPassword: control.value };
+    };
   }
+  
 
 }
