@@ -5,6 +5,7 @@ import { FormBuilder } from '@angular/forms';
 import { CustomValidators } from 'src/app/validators/custom-validator';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { group } from '@angular/animations';
+import { User } from 'src/app/model/user';
 
 @Component({
   selector: 'app-register',
@@ -30,16 +31,13 @@ export class RegisterComponent {
   })
 
   onSubmit() {
-    if (this.registerForm.valid) {
-      const password = this.registerForm.get('password') ? this.registerForm.get('password')!.value : '';
-      console.log('Password:', password);
-  
-      // Ora puoi passare la password al tuo servizio
-      this.storageServ.savePassword(password!);
+    console.log(this.registerForm.valid);
+    console.log(this.registerForm.value);
+    this.storageServ.saveUser(this.registerForm.value as User)
     }
   }
-  
-  
+
+
 
   // profileForm = this.fb.group({
   //   firstName: ['', Validators.required],
@@ -97,4 +95,4 @@ export class RegisterComponent {
 //     this.aliases.push(this.fb.control(''));
 //   }
 
-}
+
